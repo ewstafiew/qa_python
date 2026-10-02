@@ -34,26 +34,50 @@ class TestBooksCollector:
 
         assert collector.get_book_genre('Оно') == 'Ужасы'
 
-    # set_book_genre / get_book_genre
+    # set_book_genre
 
     @pytest.mark.parametrize('name, genre', [
         ('Оно', 'Ужасы'),
         ('Дюна', 'Фантастика'),
         ('Карлсон', 'Мультфильмы'),
     ])
-    def test_set_and_get_book_genre(self, name, genre):
+    def test_set_book_genre_sets_genre(self, name, genre):
         collector = BooksCollector()
         collector.add_new_book(name)
         collector.set_book_genre(name, genre)
 
-        assert collector.get_book_genre(name) == genre
+        assert collector.books_genre[name] == genre
 
     def test_set_book_genre_invalid_genre_keeps_empty(self):
         collector = BooksCollector()
         collector.add_new_book('Оно')
         collector.set_book_genre('Оно', 'Триллер')
 
-        assert collector.get_book_genre('Оно') == ''
+        assert collector.books_genre['Оно'] == ''
+
+    # get_book_genre
+
+    @pytest.mark.parametrize('name, genre', [
+        ('Оно', 'Ужасы'),
+        ('Дюна', 'Фантастика'),
+        ('Карлсон', 'Мультфильмы'),
+    ])
+    def test_get_book_genre_returns_genre(self, name, genre):
+        collector = BooksCollector()
+        collector.add_new_book(name)
+        collector.set_book_genre(name, genre)
+
+        assert collector.get_book_genre(name) == genre
+
+    def test_get_book_genre_returns_empty_for_book_without_genre(self):
+        collector = BooksCollector()
+        collector.add_new_book('Супермен')
+
+        assert collector.get_book_genre('Супермен') == ''
+
+    def test_get_book_genre_returns_none_for_unknown_book(self):
+        collector = BooksCollector()
+        assert collector.get_book_genre('Несуществующая') is None
 
     # get_books_with_specific_genre
 
